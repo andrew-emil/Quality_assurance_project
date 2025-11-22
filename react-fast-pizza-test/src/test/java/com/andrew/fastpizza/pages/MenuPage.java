@@ -1,6 +1,7 @@
 package com.andrew.fastpizza.pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -14,11 +15,10 @@ public class MenuPage {
     private final WebDriver driver;
 
     private final By pizzaItems = By.id("pizza");
-    private final By pizzaName = By.id("pizzaName");
-    private final By pizzaIngredients = By.id("pizzaIngredients");
     private final By addToCartButton = By.tagName("button");
     private final By soldOutLabel = By.id("soldOut");
     private final By cartCount = By.id("cartItems");
+    private final By pizzaImage = By.tagName("img");
 
     public MenuPage(WebDriver driver) {
         this.driver = driver;
@@ -35,18 +35,6 @@ public class MenuPage {
 
     public boolean hasAtLeastOnePizza(){
         return !driver.findElements(pizzaItems).isEmpty();
-    }
-
-    public boolean allPizzasHaveNameAndIngredients(){
-        for (WebElement pizza : getAllPizzaItems()){
-            String name = pizza.findElement(pizzaName).getText();
-            String ingredients = pizza.findElement(pizzaIngredients).getText();
-
-            if(name.isEmpty() || ingredients.isEmpty())
-                return false;
-        }
-
-        return true;
     }
 
     private WebElement getFirstAvailablePizza() {
@@ -78,5 +66,25 @@ public class MenuPage {
         String count = driver.findElement(cartCount).getText().split(" ")[0];
 
         return Integer.parseInt(count);
+    }
+
+    public boolean isImageDisplayed(){
+        WebElement image = driver.findElements(pizzaImage).getFirst();
+
+        return image.isDisplayed();
+    }
+
+    public boolean isImageLoaded(){
+        WebElement image = driver.findElements(pizzaImage).getFirst();
+
+        JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
+        @SuppressWarnings("DataFlowIssue") boolean isLoaded =  (Boolean) javascriptExecutor.executeScript(
+                "return arguments[0].complete && " +
+                        "typeof arguments[0].naturalWidth != 'undefined' && " +
+                        "arguments[0].naturalWidth > 0;",
+                image
+        );
+
+        return isLoaded;
     }
 }

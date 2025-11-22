@@ -19,9 +19,12 @@ public class MenuPageTest extends BaseTest {
     }
 
     @Test
-    public void testEachPizzaHaveNameAndIngredients(){
-        Assert.assertTrue(menuPage.allPizzasHaveNameAndIngredients(),
-                "Each pizza item should display a name and ingredients.");
+    public void testHeroPizzaImageLoads(){
+        Assert.assertTrue(menuPage.isImageDisplayed(),
+                "Hero pizza image element should be visible on the home page.");
+
+        Assert.assertTrue(menuPage.isImageLoaded(),
+                "Hero pizza image should be loaded successfully.");
     }
 
     @Test
@@ -32,4 +35,6 @@ public class MenuPageTest extends BaseTest {
         Assert.assertTrue(0 < cartCount,
                 "Cart count should increase after adding a pizza from the menu.");
     }
+
+
 }

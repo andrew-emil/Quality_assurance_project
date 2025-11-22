@@ -1,5 +1,6 @@
 package com.andrew.fastpizza.utils;
 
+import com.andrew.fastpizza.pages.CartPage;
 import com.andrew.fastpizza.pages.HomePage;
 import com.andrew.fastpizza.pages.MenuPage;
 import org.openqa.selenium.By;
@@ -14,6 +15,7 @@ public class BaseTest {
     protected WebDriver driver;
     protected HomePage homePage;
     protected MenuPage menuPage;
+    protected CartPage cartPage;
     protected String url = "http://localhost:5173/";
 
     @BeforeClass
@@ -27,6 +29,7 @@ public class BaseTest {
         driver.get(url);
         homePage = new HomePage(driver);
         menuPage = null;
+        cartPage = null;
     }
 
     protected void goToMenuPage(String name){
@@ -38,9 +41,19 @@ public class BaseTest {
         menuPage.waitForMenuToLoad();
     }
 
+    protected void goToCartPage(){
+        goToMenuPage("Andrew");
+
+        menuPage.clickAddToCartOnFirstAvailablePizza();
+
+        driver.findElement(By.id("open-cart")).click();
+
+        cartPage = new CartPage(driver);
+    }
+
     @AfterClass
     public void tearDown() throws InterruptedException {
-        Thread.sleep(3000);
+        Thread.sleep(1500);
         if (driver != null) {
             driver.quit();
         }
