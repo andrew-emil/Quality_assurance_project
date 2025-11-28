@@ -3,6 +3,7 @@ package com.andrew.fastpizza.utils;
 import com.andrew.fastpizza.pages.CartPage;
 import com.andrew.fastpizza.pages.HomePage;
 import com.andrew.fastpizza.pages.MenuPage;
+import com.andrew.fastpizza.pages.OrderPage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -10,12 +11,15 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.AfterClass;
 
+import java.time.Duration;
+
 public class BaseTest {
 
     protected WebDriver driver;
     protected HomePage homePage;
     protected MenuPage menuPage;
     protected CartPage cartPage;
+    protected OrderPage orderPage;
     protected String url = "http://localhost:5173/";
 
     @BeforeClass
@@ -30,6 +34,7 @@ public class BaseTest {
         homePage = new HomePage(driver);
         menuPage = null;
         cartPage = null;
+        orderPage = null;
     }
 
     protected void goToMenuPage(String name){
@@ -49,6 +54,13 @@ public class BaseTest {
         driver.findElement(By.id("open-cart")).click();
 
         cartPage = new CartPage(driver);
+    }
+
+    protected void goToOrderPage(){
+        goToCartPage();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(2));
+        driver.findElement(By.xpath("//a[@href='/order/new']")).click();
+        orderPage = new OrderPage(driver);
     }
 
     @AfterClass
