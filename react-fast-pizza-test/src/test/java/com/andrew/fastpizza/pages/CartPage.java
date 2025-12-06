@@ -18,6 +18,9 @@ public class CartPage {
     private final By cartTotal = By.id("cartPrice");
     private final By emptyCartMessage = By.id("empty-cart");
 
+    private final By decreaseButton = By.xpath("//button[text()='-']");
+    private final By orderPizzasButton = By.xpath("//a[@href='/order/new']");
+
     public CartPage(WebDriver driver) {
         this.driver = driver;
     }
@@ -52,13 +55,18 @@ public class CartPage {
         String totalText = driver
                 .findElement(cartTotal)
                 .getText()
-                .substring(1);
+                .substring(1); // assumes something like "$12"
         return Double.parseDouble(totalText);
     }
 
     public void increaseFirstItemQuantity() {
         WebElement item = getFirstCartItem();
         item.findElement(increaseButton).click();
+    }
+
+    public void decreaseFirstItemQuantity() {
+        WebElement item = getFirstCartItem();
+        item.findElement(decreaseButton).click();
     }
 
     public void clearCart(){
@@ -69,5 +77,15 @@ public class CartPage {
     public boolean isEmptyCartMessageDisplayed() {
         WebElement msg = driver.findElement(emptyCartMessage);
         return  msg.isDisplayed();
+    }
+
+    public boolean canProceedToOrder() {
+        List<WebElement> buttons = driver.findElements(orderPizzasButton);
+        if (buttons.isEmpty()) {
+            // No button at all -> definitely cannot order
+            return false;
+        }
+        WebElement btn = buttons.getFirst();
+        return btn.isDisplayed() && btn.isEnabled();
     }
 }

@@ -19,6 +19,7 @@ public class MenuPage {
     private final By soldOutLabel = By.id("soldOut");
     private final By cartCount = By.id("cartItems");
     private final By pizzaImage = By.tagName("img");
+    private final By openCartButton = By.id("open-cart");
 
     public MenuPage(WebDriver driver) {
         this.driver = driver;
@@ -50,6 +51,19 @@ public class MenuPage {
             return pizza;
         }
         return null;
+    }
+
+    public WebElement getFirstSoldOutPizza(){
+        for (WebElement pizza: getAllPizzaItems()){
+            if(!pizza.findElements(soldOutLabel).isEmpty())
+                return pizza;
+
+        }
+        return null;
+    }
+
+    public boolean isAddToCartDisplayed(WebElement pizza) {
+        return !pizza.findElements(addToCartButton).isEmpty();
     }
 
     public void clickAddToCartOnFirstAvailablePizza() {
@@ -86,5 +100,9 @@ public class MenuPage {
         );
 
         return isLoaded;
+    }
+
+    public void clickOpenCartButton(){
+        driver.findElement(openCartButton).click();
     }
 }

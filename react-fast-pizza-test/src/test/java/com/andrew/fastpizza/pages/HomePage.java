@@ -13,6 +13,7 @@ public class HomePage {
     private final By nameInput = By.xpath("//input[@placeholder='Your full name']");
     private final By startButton = By.xpath("//button[contains(., 'Start')]");
 
+
     public HomePage(WebDriver driver) {
         this.driver = driver;
     }

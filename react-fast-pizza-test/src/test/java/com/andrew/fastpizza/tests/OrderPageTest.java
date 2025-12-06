@@ -3,6 +3,7 @@ package com.andrew.fastpizza.tests;
 import com.andrew.fastpizza.utils.BaseTest;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class OrderPageTest extends BaseTest {
@@ -28,28 +29,36 @@ public class OrderPageTest extends BaseTest {
                 "Customer name should not be changeable on the order page.");
     }
 
-    @Test
-    public void testPhoneValidation(){
+    @DataProvider(name = "phoneCases")
+    public Object[][] phoneCases(){
+        return new Object[][]{
+                {"  ", false, "empty"},
+                {"abc123", false, "letters"},
+                {"123", false, "too short"},
+                {"01012345678", true, "valid"}
+        };
+    }
+    @Test(dataProvider = "phoneCases")
+    public void testPhoneValidation(String phone, boolean isValid, String caseName){
         String validAddress = "Ain Shams";
         Assert.assertTrue(orderPage.isPhoneInputRequired(),
                 "Expected phone error when phone is empty.");
 
-        orderPage.setPhone("abc123");
+        orderPage.setPhone(phone);
         orderPage.setAddress(validAddress);
         orderPage.submitOrder();
 
         String errorInvalid = orderPage.getPhoneError();
-        Assert.assertFalse(errorInvalid.isEmpty(),
-                "Expected phone error when phone format is invalid.");
 
-        orderPage.setPhone("01204936350");
-        orderPage.setAddress(validAddress);
-        orderPage.submitOrder();
-
-        String currentUrl = driver.getCurrentUrl();
-        Assert.assertNotNull(currentUrl);
-        Assert.assertTrue(currentUrl.matches(".*/order/[^/]+"),
-                "Expected URL to match /order/{orderID}, but was: " + currentUrl);
+        if(isValid){
+            String currentUrl = driver.getCurrentUrl();
+            Assert.assertNotNull(currentUrl);
+            Assert.assertTrue(currentUrl.matches(".*/order/[^/]+"),
+                    "Expected URL to match /order/{orderID}, but was: " + currentUrl);
+        }else {
+            Assert.assertFalse(errorInvalid.isEmpty(),
+                    "For case '" + caseName + "' expected phone error but none was shown.");
+        }
     }
 
     @Test
@@ -66,7 +75,6 @@ public class OrderPageTest extends BaseTest {
     @Test
     public void testPriorityCheckboxIncreasesTotal(){
         double totalBefore = orderPage.getTotal();
-        System.out.println(totalBefore);
 
         orderPage.setPriority(true);
         Assert.assertTrue(orderPage.isPriorityChecked(),

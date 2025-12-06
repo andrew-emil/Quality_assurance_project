@@ -32,9 +32,11 @@ public class BaseTest {
     public void loadApplication() {
         driver.get(url);
         homePage = new HomePage(driver);
+/*
         menuPage = null;
         cartPage = null;
         orderPage = null;
+*/
     }
 
     protected void goToMenuPage(String name){
